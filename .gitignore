@@ -1,0 +1,22 @@
+# IntelliJ
+.idea/
+*.iml
+
+# Maven
+target/
+
+# Gradle
+.gradle/
+build/
+
+# Logs
+*.log
+
+# Environment
+.env
+
+# Mac
+.DS_Store
+
+# Windows
+Thumbs.db
