@@ -52,6 +52,7 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
+
 //    id
 //            fullName
 //    email
