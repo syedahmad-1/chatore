@@ -39,13 +39,10 @@ public class User extends BaseEntity {
     private String password;
 
     @Column(nullable = false)
-    private String role;
+    private boolean isEmailVerified;
 
     @Column(nullable = false)
-    private Boolean isEmailVerified;
-
-    @Column(nullable = false)
-    private Boolean isPhoneVerified;
+    private boolean isPhoneVerified;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -55,8 +52,6 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-    @Column(nullable = false)
-    private LocalDateTime lastLoginAt;
 
 //    id
 //            fullName
