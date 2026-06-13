@@ -21,10 +21,6 @@ import java.util.UUID;
 
 public class User extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-
     @Column(nullable = false)
     private String firstName;
 
