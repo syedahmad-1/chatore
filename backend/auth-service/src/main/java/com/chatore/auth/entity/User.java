@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -52,16 +54,15 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
+    private LocalDateTime lastLoginAt;
 
-//    id
-//            fullName
-//    email
-//            phoneNumber
-//    password
-//            role
-//    isEmailVerified
-//            isPhoneVerified
-//    accountStatus
-//            lastLoginAt
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<RefreshToken> refreshTokens = new ArrayList<>();
+
+
 
 }
