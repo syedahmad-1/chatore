@@ -1,11 +1,10 @@
 package com.chatore.auth.controller;
 
 
-import com.chatore.auth.dto.request.ChangePasswordRequest;
-import com.chatore.auth.dto.request.LoginRequest;
-import com.chatore.auth.dto.request.SignupRequest;
+import com.chatore.auth.dto.request.*;
 import com.chatore.auth.dto.response.ApiResponse;
 import com.chatore.auth.dto.response.AuthResponse;
+import com.chatore.auth.dto.response.RefreshTokenResponse;
 import com.chatore.auth.dto.response.UserProfileResponse;
 import com.chatore.auth.exception.custom.BadRequestException;
 import com.chatore.auth.service.AuthService;
@@ -80,6 +79,42 @@ public class AuthController {
                             .build()
             );
         }
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<ApiResponse<RefreshTokenResponse>>
+    refreshToken(
+            @RequestBody
+            RefreshTokenRequest request
+    ) {
+
+        return ResponseEntity.ok(
+                ApiResponse.<RefreshTokenResponse>builder()
+                        .success(true)
+                        .message("Token refreshed")
+                        .data(
+                                authService
+                                        .refreshToken(
+                                                request
+                                        )
+                        )
+                        .build()
+        );
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<Void>> logout(
+            @RequestBody LogoutRequest request
+    ) {
+
+        authService.logout(request);
+
+        return ResponseEntity.ok(
+                ApiResponse.<Void>builder()
+                        .success(true)
+                        .message("Logged out successfully")
+                        .build()
+        );
     }
 
 }

@@ -1,10 +1,7 @@
 package com.chatore.auth.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.Instant;
 
@@ -19,6 +16,7 @@ import java.time.Instant;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class RefreshToken extends BaseEntity {
 
     @Column(nullable = false, unique = true)
@@ -28,6 +26,7 @@ public class RefreshToken extends BaseEntity {
     private Instant expiresAt;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean revoked = false;
 
     @ManyToOne

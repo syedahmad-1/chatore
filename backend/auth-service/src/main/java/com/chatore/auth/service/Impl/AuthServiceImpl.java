@@ -1,11 +1,11 @@
 package com.chatore.auth.service.Impl;
 
 
-import com.chatore.auth.dto.request.ChangePasswordRequest;
-import com.chatore.auth.dto.request.LoginRequest;
-import com.chatore.auth.dto.request.SignupRequest;
+import com.chatore.auth.dto.request.*;
 import com.chatore.auth.dto.response.AuthResponse;
+import com.chatore.auth.dto.response.RefreshTokenResponse;
 import com.chatore.auth.dto.response.UserProfileResponse;
+import com.chatore.auth.entity.RefreshToken;
 import com.chatore.auth.entity.User;
 import com.chatore.auth.entity.enums.AccountStatus;
 import com.chatore.auth.entity.enums.UserRole;
@@ -13,6 +13,7 @@ import com.chatore.auth.exception.custom.BadRequestException;
 import com.chatore.auth.repository.UserRepository;
 import com.chatore.auth.security.JwtService;
 import com.chatore.auth.service.AuthService;
+import com.chatore.auth.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RefreshTokenService refreshTokenService;
 
     private final JwtService jwtService;
 
@@ -51,12 +53,16 @@ public class AuthServiceImpl implements AuthService {
                     .build();
 
             userRepository.save(user);
+            RefreshToken refreshToken =
+                    refreshTokenService.createRefreshToken(user);
+
 
             String token = jwtService.generateToken(user.getEmail());
 
             return AuthResponse.builder()
                     .accessToken(token)
-                    .tokenType("Bearer").
+                    .tokenType("Bearer")
+                    .refreshToken(refreshToken.getToken()).
                     build();
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
@@ -81,10 +87,13 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String token = jwtService.generateToken(user.getEmail());
+        RefreshToken refreshToken =
+                refreshTokenService.createRefreshToken(user);
 
         return AuthResponse.builder()
                 .accessToken(token)
-                .tokenType("Bearer").
+                .tokenType("Bearer")
+                .refreshToken(refreshToken.getToken()).
                 build();
 
     }
@@ -131,6 +140,31 @@ public class AuthServiceImpl implements AuthService {
 
         User savedUser = userRepository.save(user);
 
+    }
+
+    @Override
+    public RefreshTokenResponse refreshToken(RefreshTokenRequest request) {
+        RefreshToken refreshToken =
+                refreshTokenService
+                        .validateRefreshToken(
+                                request.getRefreshToken()
+                        );
+
+        String accessToken =
+                jwtService.generateToken(
+                        refreshToken.getUser().getEmail()
+                );
+
+        return RefreshTokenResponse.builder()
+                .accessToken(accessToken)
+                .build();
+    }
+
+    @Override
+    public void logout(LogoutRequest request) {
+        refreshTokenService.revokeRefreshToken(
+                request.getRefreshToken()
+        );
     }
 
 

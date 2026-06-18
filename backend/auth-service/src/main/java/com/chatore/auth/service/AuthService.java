@@ -1,9 +1,8 @@
 package com.chatore.auth.service;
 
-import com.chatore.auth.dto.request.ChangePasswordRequest;
-import com.chatore.auth.dto.request.LoginRequest;
-import com.chatore.auth.dto.request.SignupRequest;
+import com.chatore.auth.dto.request.*;
 import com.chatore.auth.dto.response.AuthResponse;
+import com.chatore.auth.dto.response.RefreshTokenResponse;
 import com.chatore.auth.dto.response.UserProfileResponse;
 
 public interface AuthService {
@@ -17,5 +16,7 @@ public interface AuthService {
     void changePassword(ChangePasswordRequest changePasswordRequest);
 
 
+    RefreshTokenResponse refreshToken(RefreshTokenRequest request);
 
+    void logout(LogoutRequest request);
 }

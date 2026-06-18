@@ -1,4 +1,4 @@
-package com.chatore.auth.service;
+package com.chatore.auth.service.Impl;
 
 import com.chatore.auth.entity.User;
 import com.chatore.auth.repository.UserRepository;
