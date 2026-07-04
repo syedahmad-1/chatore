@@ -1,0 +1,87 @@
+To manually test the API endpoints in `AuthController`, you need to have the `auth-service` application running.
+
+**Step 1: Start the `auth-service` application.**
+
+You can usually start a Spring Boot application by navigating to the `backend/auth-service` directory and running:
+
+```bash
+./mvnw spring-boot:run
+```
+(On Windows, you might need to use `mvnw.cmd spring-boot:run`)
+
+Ensure the application starts successfully, typically listening on port `8082`.
+
+**Step 2: Use `curl` to make HTTP requests to the API endpoints.**
+
+Here are `curl` commands for each endpoint. Remember to replace placeholder values like `your_email@example.com`, `your_password`, `old_password`, `new_password`, `jwt_access_token`, and `refresh_token` with your actual test data.
+
+**1. Register a new user (`POST /api/v1/auth/signup`)**
+
+```bash
+curl -X POST http://localhost:8082/api/v1/auth/signup 
+-H "Content-Type: application/json" 
+-d '{
+  "firstName": "Test",
+  "lastName": "User",
+  "email": "testuser@example.com",
+  "password": "password123",
+  "phoneNumber": "1234567890"
+}'
+```
+
+**2. Log in a user (`POST /api/v1/auth/login`)**
+
+```bash
+curl -X POST http://localhost:8082/api/v1/auth/login 
+-H "Content-Type: application/json" 
+-d '{
+  "email": "testuser@example.com",
+  "password": "password123"
+}'
+```
+*Note: This request will return an `accessToken` and `refreshToken`. You'll need these for subsequent authenticated requests.*
+
+**3. Get current user profile (`GET /api/v1/auth/me`)**
+
+```bash
+curl -X GET http://localhost:8082/api/v1/auth/me 
+-H "Authorization: Bearer <jwt_access_token>"
+```
+*Replace `<jwt_access_token>` with the token obtained from the login response.*
+
+**4. Change user password (`POST /api/v1/auth/change-password`)**
+
+```bash
+curl -X POST http://localhost:8082/api/v1/auth/change-password 
+-H "Content-Type: application/json" 
+-H "Authorization: Bearer <jwt_access_token>" 
+-d '{
+  "currentPassword": "password123",
+  "newPassword": "newpassword456"
+}'
+```
+*Replace `<jwt_access_token>` with a valid token and `password123`/`newpassword456` with appropriate values.*
+
+**5. Refresh access token (`POST /api/v1/auth/refresh-token`)**
+
+```bash
+curl -X POST http://localhost:8082/api/v1/auth/refresh-token 
+-H "Content-Type: application/json" 
+-d '{
+  "refreshToken": "<your_refresh_token>"
+}'
+```
+*Replace `<your_refresh_token>` with the refresh token obtained from the login response.*
+
+**6. Log out user (`POST /api/v1/auth/logout`)**
+
+```bash
+curl -X POST http://localhost:8082/api/v1/auth/logout 
+-H "Content-Type: application/json" 
+-d '{
+  "refreshToken": "<your_refresh_token>"
+}'
+```
+*Replace `<your_refresh_token>` with the refresh token obtained from the login response.*
+
+Remember to check the HTTP status code and the JSON response for each request to verify the expected behavior.

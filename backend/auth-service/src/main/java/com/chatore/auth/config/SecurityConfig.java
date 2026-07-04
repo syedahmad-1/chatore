@@ -46,14 +46,14 @@ public class SecurityConfig {
                         auth
                                 .requestMatchers(
                                         "/api/v1/auth/login",
-                                        "/api/v1/auth/signup"
+                                        "/api/v1/auth/signup",
+                                        "/api/v1/auth/refresh-token"
                                 )
                                 .permitAll()
 
                                 .anyRequest()
                                 .authenticated()
                 )
-
                 .addFilterBefore(
                         jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class

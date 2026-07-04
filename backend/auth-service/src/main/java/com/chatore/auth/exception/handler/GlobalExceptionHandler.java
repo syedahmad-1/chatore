@@ -2,6 +2,7 @@ package com.chatore.auth.exception.handler;
 
 import com.chatore.auth.dto.response.ApiResponse;
 import com.chatore.auth.exception.custom.BadRequestException;
+import com.chatore.auth.exception.custom.ResourceNotFoundException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,22 @@ public class GlobalExceptionHandler {
                         ApiResponse.<Void>builder()
                                 .success(false)
                                 .message(ex.getMessage())
+                                .build()
+                );
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiResponse<Object>>
+    handleResourceNotFoundException(
+            ResourceNotFoundException ex
+    ) {
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(
+                        ApiResponse.builder()
+                                .success(false)
+                                .message(ex.getMessage())
+                                .data(null)
                                 .build()
                 );
     }
