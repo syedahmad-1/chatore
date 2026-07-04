@@ -1,4 +1,4 @@
-package com.chatore.auth.exception;
+package com.chatore.auth.exception.custom;
 
 public class ResourceNotFoundException
         extends RuntimeException {

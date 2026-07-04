@@ -1,4 +1,7 @@
 package com.chatore.auth.entity.enums;
 
-public class AddressLabel {
+public enum AddressLabel {
+    HOME,
+    WORK,
+    OTHER
 }

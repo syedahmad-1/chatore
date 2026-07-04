@@ -59,6 +59,15 @@ public class User extends BaseEntity {
     )
     private List<RefreshToken> refreshTokens = new ArrayList<>();
 
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @Builder.Default
+    private List<UserAddress> addresses =
+            new ArrayList<>();
+
 
 
 }
