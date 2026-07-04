@@ -177,11 +177,11 @@ public class AddressServiceImpl implements AddressService {
 
     private User getCurrentUser() {
 
-        String email =
-                authenticationUtil.getLoggedInUserEmail();
+        UUID userId =
+                authenticationUtil.getLoggedInUserId();
 
         return userRepository
-                .findByEmail(email)
+                .findById(userId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "User not found"

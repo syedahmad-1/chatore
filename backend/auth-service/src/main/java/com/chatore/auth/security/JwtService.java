@@ -10,6 +10,10 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.Function;
 
 @Component
 public class JwtService {
@@ -19,23 +23,33 @@ public class JwtService {
     @Value("${jwt.expiration}")
     private long jwtExpiration;
 
-    public String generateToken(String email){
-        SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+    public String generateToken(UUID userId, String email){
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("email", email);
 
         return Jwts.builder()
-                .subject(email)
+                .claims(claims)
+                .subject(userId.toString())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(getSignInKey())
                 .compact();
     }
 
-    public String extractEmail(String token) {
-
-        return extractClaims(token).getSubject();
+    public String extractUserId(String token) {
+        return extractClaim(token, Claims::getSubject);
     }
 
-    private Claims extractClaims(String token) {
+    public String extractEmail(String token) {
+        return extractAllClaims(token).get("email", String.class);
+    }
+
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
+    private Claims extractAllClaims(String token) {
         return Jwts.parser()
                 .verifyWith(getSignInKey())
                 .build()
@@ -43,15 +57,13 @@ public class JwtService {
                 .getPayload();
     }
 
-    public boolean validateToken(String token, String email) {
-        String extractedEmail = extractEmail(token);
-
-        return extractedEmail.equals(email) && !isTokenExpired(token);
+    public boolean validateToken(String token, UUID userId) {
+        final String extractedUserId = extractUserId(token);
+        return extractedUserId.equals(userId.toString()) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {
-
-        return extractClaims(token)
+        return extractAllClaims(token)
                 .getExpiration()
                 .before(new Date());
     }

@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -57,7 +58,7 @@ public class AuthServiceImpl implements AuthService {
                     refreshTokenService.createRefreshToken(user);
 
 
-            String token = jwtService.generateToken(user.getEmail());
+            String token = jwtService.generateToken(user.getId(), user.getEmail());
 
             return AuthResponse.builder()
                     .accessToken(token)
@@ -86,7 +87,7 @@ public class AuthServiceImpl implements AuthService {
             throw new BadRequestException("Invalid Credentials");
         }
 
-        String token = jwtService.generateToken(user.getEmail());
+        String token = jwtService.generateToken(user.getId(), user.getEmail());
         RefreshToken refreshToken =
                 refreshTokenService.createRefreshToken(user);
 
@@ -102,9 +103,9 @@ public class AuthServiceImpl implements AuthService {
     public UserProfileResponse getUserProfile() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        String email = authentication.getName();
+        String userIdString = authentication.getName();
 
-        User user =  userRepository.findByEmail(email).orElseThrow(()-> new BadRequestException("Invalid Credentials"));
+        User user =  userRepository.findById(UUID.fromString(userIdString)).orElseThrow(()-> new BadRequestException("Invalid Credentials"));
 
         return UserProfileResponse.builder()
                 .id(user.getId())
@@ -122,8 +123,8 @@ public class AuthServiceImpl implements AuthService {
     public void changePassword(ChangePasswordRequest currentPasswordRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        String email = authentication.getName();
-        User user =  userRepository.findByEmail(email).orElseThrow(()->
+        String userIdString = authentication.getName();
+        User user =  userRepository.findById(UUID.fromString(userIdString)).orElseThrow(()->
                 new BadRequestException("Invalid Credentials"));
 
         boolean passwordMatches = passwordEncoder.matches(
@@ -152,7 +153,7 @@ public class AuthServiceImpl implements AuthService {
 
         String accessToken =
                 jwtService.generateToken(
-                        refreshToken.getUser().getEmail()
+                        refreshToken.getUser().getId(), refreshToken.getUser().getEmail()
                 );
 
         return RefreshTokenResponse.builder()

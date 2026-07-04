@@ -3,25 +3,17 @@ package com.chatore.auth.security;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import java.nio.file.attribute.UserPrincipal;
+import java.util.UUID;
 
 @Component
 public class AuthenticationUtil {
 
-    public String getLoggedInUserEmail() {
-
-        return SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getName();
-    }
-
-    public UserPrincipal getCurrentUser() {
-
-        return (UserPrincipal)
+    public UUID getLoggedInUserId() {
+        return UUID.fromString(
                 SecurityContextHolder
                         .getContext()
                         .getAuthentication()
-                        .getPrincipal();
+                        .getName()
+        );
     }
 }
