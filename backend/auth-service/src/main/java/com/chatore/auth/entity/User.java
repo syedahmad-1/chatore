@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -18,10 +20,6 @@ import java.util.UUID;
 @Builder
 
 public class User extends BaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
 
     @Column(nullable = false)
     private String firstName;
@@ -39,13 +37,10 @@ public class User extends BaseEntity {
     private String password;
 
     @Column(nullable = false)
-    private String role;
+    private boolean isEmailVerified;
 
     @Column(nullable = false)
-    private Boolean isEmailVerified;
-
-    @Column(nullable = false)
-    private Boolean isPhoneVerified;
+    private boolean isPhoneVerified;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -55,18 +50,24 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-    @Column(nullable = false)
     private LocalDateTime lastLoginAt;
 
-//    id
-//            fullName
-//    email
-//            phoneNumber
-//    password
-//            role
-//    isEmailVerified
-//            isPhoneVerified
-//    accountStatus
-//            lastLoginAt
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<RefreshToken> refreshTokens = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @Builder.Default
+    private List<UserAddress> addresses =
+            new ArrayList<>();
+
+
 
 }
