@@ -22,4 +22,6 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, UUID> {
     List<Restaurant> findByAvailabilityStatus(AvailabilityStatus availabilityStatus);
 
     List<Restaurant> findByNameContainingIgnoreCase(String keyword);
+
+    List<Restaurant> findAllByOrderByCreatedAtDesc();
 }
