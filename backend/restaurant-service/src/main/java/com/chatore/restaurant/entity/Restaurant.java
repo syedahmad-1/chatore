@@ -28,11 +28,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Restaurant {
+public class Restaurant extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
 
     @Column(name = "owner_id", nullable = false)
     private UUID ownerId;
@@ -78,11 +75,4 @@ public class Restaurant {
 
     @Column(nullable = false)
     private Integer totalReviews;
-
-    @CreationTimestamp
-    @Column(updatable = false)
-    private Instant createdAt;
-
-    @UpdateTimestamp
-    private Instant updatedAt;
 }
